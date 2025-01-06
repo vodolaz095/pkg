@@ -1,31 +1,30 @@
-package helpers
+package date
 
 import "time"
 
 // BeginningOfTheDay returns moment when this day begins - 00:00:00
-func BeginningOfTheDay(date time.Time) time.Time {
-	return time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 1, time.Local)
-
+func BeginningOfTheDay(when time.Time) time.Time {
+	return time.Date(when.Year(), when.Month(), when.Day(), 0, 0, 0, 1, when.Location())
 }
 
 // EndOfTheDay returns moment when this day ends - 23:59:59
-func EndOfTheDay(date time.Time) time.Time {
-	return time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 1, time.Local)
+func EndOfTheDay(when time.Time) time.Time {
+	return time.Date(when.Year(), when.Month(), when.Day(), 23, 59, 59, 1, when.Location())
 }
 
 // BeginningOfMonth returns moment when this month begins
-func BeginningOfMonth(date time.Time) time.Time {
-	return date.AddDate(0, 0, -date.Day()+1)
+func BeginningOfMonth(when time.Time) time.Time {
+	return when.AddDate(0, 0, -when.Day()+1)
 }
 
 // EndOfMonth returns moment when this month is ends
 func EndOfMonth(date time.Time) time.Time {
 	end := date.AddDate(0, 1, -date.Day())
-	return time.Date(end.Year(), end.Month(), end.Day(), 23, 59, 59, 0, time.Local)
+	return time.Date(end.Year(), end.Month(), end.Day(), 23, 59, 59, 0, date.Location())
 }
 
-// BeginningOfThisWeek returns beginning of this week
-func BeginningOfThisWeek(when time.Time) time.Time {
+// BeginningOfWeek returns beginning of this week
+func BeginningOfWeek(when time.Time) time.Time {
 	year, week := when.ISOWeek()
 	date := time.Date(when.Year(), 0, 0, 0, 0, 0, 0, when.Location())
 	isoYear, isoWeek := date.ISOWeek()
@@ -42,4 +41,9 @@ func BeginningOfThisWeek(when time.Time) time.Time {
 		isoYear, isoWeek = date.ISOWeek()
 	}
 	return date
+}
+
+// EndOfWeek returns beginning of this week
+func EndOfWeek(when time.Time) time.Time {
+	return BeginningOfWeek(when).AddDate(0, 0, 7)
 }

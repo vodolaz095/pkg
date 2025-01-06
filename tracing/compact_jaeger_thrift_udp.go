@@ -19,17 +19,23 @@ func ConfigureUDP(cfg UDPConfig, extraAttributes ...attribute.KeyValue) (err err
 		log.Debug().Msgf("Tracing disabled")
 		return nil
 	}
-	parts := strings.Split(cfg.Endpoint, ":")
-	if len(parts) != 2 {
-		return fmt.Errorf("malformed endpoint: %s", cfg.Endpoint)
+	if cfg.Endpoint == "" {
+		host := loadFromEnv("OTEL_EXPORTER_JAEGER_AGENT_HOST", "localhost")
+		port := loadFromEnv("OTEL_EXPORTER_JAEGER_AGENT_PORT", "6831")
+		log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via udp into %s:%s.", host, port)
+		exp, err = jaeger.New(jaeger.WithAgentEndpoint())
+	} else {
+		parts := strings.Split(cfg.Endpoint, ":")
+		if len(parts) != 2 {
+			return fmt.Errorf("malformed endpoint: %s", cfg.Endpoint)
+		}
+		log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via udp into %s...", cfg.Endpoint)
+		// export via compact thrift protocol over upd - important
+		exp, err = jaeger.New(jaeger.WithAgentEndpoint(
+			jaeger.WithAgentHost(parts[0]),
+			jaeger.WithAgentPort(parts[1]),
+		))
 	}
-
-	log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via udp into %s...", cfg.Endpoint)
-	// export via compact thrift protocol over upd - important
-	exp, err = jaeger.New(jaeger.WithAgentEndpoint(
-		jaeger.WithAgentHost(parts[0]),
-		jaeger.WithAgentPort(parts[1]),
-	))
 	if err != nil {
 		return err
 	}

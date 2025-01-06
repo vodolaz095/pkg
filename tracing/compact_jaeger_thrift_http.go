@@ -19,14 +19,19 @@ func ConfigureHTTP(cfg HTTPConfig, extraAttributes ...attribute.KeyValue) (err e
 		return nil
 	}
 	opts := make([]jaeger.CollectorEndpointOption, 0)
-	opts = append(opts, jaeger.WithEndpoint(cfg.Endpoint))
+	if cfg.Endpoint != "" {
+		opts = append(opts, jaeger.WithEndpoint(cfg.Endpoint))
+		log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via http into %s...", cfg.Endpoint)
+	} else {
+		where := loadFromEnv("OTEL_EXPORTER_JAEGER_ENDPOINT", "http://localhost:14268/api/traces")
+		log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via http into %s...", where)
+	}
 	if cfg.Username != "" {
 		opts = append(opts, jaeger.WithUsername(cfg.Username))
 	}
 	if cfg.Password != "" {
 		opts = append(opts, jaeger.WithPassword(cfg.Password))
 	}
-	log.Debug().Msgf("Sending traces using compact jaeger thrift protocol via http into %s...", cfg.Endpoint)
 	// export via compact thrift protocol over http
 	exp, err = jaeger.New(jaeger.WithCollectorEndpoint(opts...))
 	if err != nil {
