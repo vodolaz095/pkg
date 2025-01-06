@@ -29,6 +29,9 @@ func SetStatus(status string) (err error) {
 // StartWatchDog starts background process that notifies systemd if application is running properly
 func StartWatchDog(mainCtx context.Context, pingers []Pinger) (err error) {
 	var ok bool
+	if len(pingers) == 0 {
+		return fmt.Errorf("pingers are not set")
+	}
 	interval, err := daemon.SdWatchdogEnabled(false)
 	if err != nil {
 		return

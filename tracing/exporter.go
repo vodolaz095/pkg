@@ -13,9 +13,9 @@ const defaultTimeout = 10 * time.Second
 var exp *jaeger.Exporter
 
 func Wait(ctx context.Context) (err error) {
-	<-ctx.Done()
-
 	if exp != nil {
+		<-ctx.Done()
+
 		shutdownContext, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 		defer cancel()
 		err = exp.Shutdown(shutdownContext)
