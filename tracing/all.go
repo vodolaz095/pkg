@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	// Protocol sets how we send spans to jaeger - over udp or over http
-	Protocol string `yaml:"protocol" validate:"required, oneof=udp http UDP HTTP"`
+	Protocol string `yaml:"protocol" validate:"required,oneof=udp http UDP HTTP"`
 
 	/*
 		Configuration for Jaeger exporter to send spans to a Jaeger agent over compact thrift protocol over UDP
