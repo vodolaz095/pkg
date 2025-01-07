@@ -16,7 +16,7 @@ type Config struct {
 
 	// Host - sets hostname of Jaeger agent, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_HOST.
 	// Default value is `localhost`
-	Host string `yaml:"host" validate:"hostname"`
+	Host string `yaml:"host" validate:"hostname_rfc1123"`
 	// Port - sets port where Jaeger agent listens, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_PORT.
 	// Default value is `6831`
 	Port string `yaml:"port" validate:"gte=0,lte=65535"`
