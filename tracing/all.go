@@ -16,10 +16,10 @@ type Config struct {
 
 	// Host - sets hostname of Jaeger agent, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_HOST.
 	// Default value is `localhost`
-	Host string `yaml:"host" validate:"hostname_rfc1123"`
+	Host string `yaml:"host" validate:"hostname_rfc1123,requiredIf=Protocol oneof=udp UDP"`
 	// Port - sets port where Jaeger agent listens, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_PORT.
 	// Default value is `6831`
-	Port string `yaml:"port" validate:"gte=0,lte=65535"`
+	Port string `yaml:"port" validate:"gte=0,lte=65535,requiredIf=Protocol oneof=udp UDP"`
 
 	/*
 		Configuration for Jaeger exporter to use full URL to the Jaeger HTTP Thrift collector.
@@ -28,7 +28,7 @@ type Config struct {
 	// Endpoint is the URL for the Jaeger collector that spans are sent to,
 	// overrides value of environment variable OTEL_EXPORTER_JAEGER_ENDPOINT.
 	// Default value is `http://localhost:14268/api/traces`
-	Endpoint string `yaml:"endpoint" validate:"url"`
+	Endpoint string `yaml:"endpoint" validate:"url,requiredIf=Protocol oneof=http HTTP"`
 	// Username used for basic authorization to access Jaeger collector. Setting value overrides environment
 	// variable OTEL_EXPORTER_JAEGER_USER. Default is empty
 	Username string `yaml:"username"`
