@@ -7,7 +7,7 @@ import (
 )
 
 type HTTPConfig struct {
-	Endpoint string  `yaml:"endpoint" validate:"url"`
+	Endpoint string  `yaml:"endpoint"`
 	Username string  `yaml:"username"`
 	Password string  `yaml:"password"`
 	Ratio    float64 `yaml:"ratio" validate:"lte=1,gte=0"`

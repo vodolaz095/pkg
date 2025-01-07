@@ -26,7 +26,7 @@ func makeProvider(ratio float64, extraAttributes ...attribute.KeyValue) error {
 		// Always be sure to batch in production.
 		tracesdk.WithBatcher(exp),
 		// set sampling part of data
-		tracesdk.WithSampler(tracesdk.TraceIDRatioBased(ratio)),
+		tracesdk.WithSampler(tracesdk.ParentBased(tracesdk.TraceIDRatioBased(ratio))),
 		// Record information about this application in a Resource.
 		tracesdk.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,

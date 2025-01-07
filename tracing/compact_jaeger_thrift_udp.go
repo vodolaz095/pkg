@@ -9,10 +9,10 @@ import (
 type UDPConfig struct {
 	// Host - sets hostname of Jaeger agent, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_HOST.
 	// Default value is `localhost`
-	Host string `yaml:"host" validate:"hostname"`
+	Host string `yaml:"host"`
 	// Port - sets port where Jaeger agent listens, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_PORT.
 	// Default value is `6831`
-	Port string `yaml:"port" validate:"gte=0,lte=65535"`
+	Port string `yaml:"port"`
 	// Ratio sets percent of spans to record, where 1 - means every span is recorded, 0 - no spans recorded and .05 means only 5% of spans are recorded
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
