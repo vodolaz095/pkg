@@ -16,10 +16,5 @@ func NewWithContext(parent context.Context) (ctx context.Context, cancel context
 }
 
 func New() (ctx context.Context, cancel context.CancelFunc) {
-	return signal.NotifyContext(context.Background(),
-		syscall.SIGHUP,
-		syscall.SIGINT,
-		syscall.SIGTERM,
-		syscall.SIGQUIT,
-		syscall.SIGABRT)
+	return NewWithContext(context.Background())
 }
