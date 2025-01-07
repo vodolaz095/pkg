@@ -6,6 +6,7 @@ import (
 	"go.opentelemetry.io/otel/exporters/jaeger"
 )
 
+// UDPConfig is used to fine tune jaeger exporter to deliver spans via compact thrift protocol to agent udp listener
 type UDPConfig struct {
 	// Host - sets hostname of Jaeger agent, overrides environment value of OTEL_EXPORTER_JAEGER_AGENT_HOST.
 	// Default value is `localhost`
@@ -17,6 +18,7 @@ type UDPConfig struct {
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
 
+// ConfigureUDP fine tunes jaeger exporter to deliver spans via compact thrift protocol to agent udp listener
 func ConfigureUDP(cfg UDPConfig, extraAttributes ...attribute.KeyValue) (err error) {
 	if cfg.Ratio == 0 {
 		log.Debug().Msgf("Tracing disabled")

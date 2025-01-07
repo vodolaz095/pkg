@@ -13,5 +13,4 @@ func TestMoments(t *testing.T) {
 	t.Logf("EndOfWeek: %s", EndOfWeek(now).Format(time.Stamp))
 	t.Logf("BeginningOfMonth: %s", BeginningOfMonth(now).Format(time.Stamp))
 	t.Logf("EndOfMonth: %s", EndOfMonth(now).Format(time.Stamp))
-
 }

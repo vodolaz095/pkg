@@ -7,6 +7,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+// AttachCodeLocationToSpan attach current code location to span
 func AttachCodeLocationToSpan(span trace.Span) {
 	_, file, line, ok := runtime.Caller(1)
 	if ok {

@@ -6,6 +6,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
+// Config is universal config being used to tune tracing
 type Config struct {
 	// Protocol sets how we send spans to jaeger - over udp or over http
 	Protocol string `yaml:"protocol" validate:"required,oneof=udp http UDP HTTP"`
@@ -40,6 +41,7 @@ type Config struct {
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
 
+// Start starts telemetry exporter
 func Start(cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 	switch cfg.Protocol {
 	case "udp", "UDP":

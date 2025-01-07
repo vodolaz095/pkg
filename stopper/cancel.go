@@ -6,6 +6,7 @@ import (
 	"syscall"
 )
 
+// NewWithContext makes child context which is terminated when process receives stop signals
 func NewWithContext(parent context.Context) (ctx context.Context, cancel context.CancelFunc) {
 	return signal.NotifyContext(parent,
 		syscall.SIGHUP,
@@ -15,6 +16,7 @@ func NewWithContext(parent context.Context) (ctx context.Context, cancel context
 		syscall.SIGABRT)
 }
 
+// New makes context which is terminated when process receives stop signals
 func New() (ctx context.Context, cancel context.CancelFunc) {
 	return NewWithContext(context.Background())
 }

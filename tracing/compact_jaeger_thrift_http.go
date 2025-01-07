@@ -6,6 +6,7 @@ import (
 	"go.opentelemetry.io/otel/exporters/jaeger"
 )
 
+// HTTPConfig is used to fine tune jaeger exporter to deliver spans via compact thrift protocol to collector http endpoint
 type HTTPConfig struct {
 	Endpoint string  `yaml:"endpoint"`
 	Username string  `yaml:"username"`
@@ -13,6 +14,7 @@ type HTTPConfig struct {
 	Ratio    float64 `yaml:"ratio" validate:"lte=1,gte=0"`
 }
 
+// ConfigureHTTP fine tunes jaeger exporter to deliver spans via compact thrift protocol to collector http endpoint
 func ConfigureHTTP(cfg HTTPConfig, extraAttributes ...attribute.KeyValue) (err error) {
 	if cfg.Ratio == 0 {
 		log.Debug().Msgf("Tracing disabled")

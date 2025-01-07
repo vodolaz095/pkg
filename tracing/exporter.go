@@ -12,6 +12,7 @@ const defaultTimeout = 10 * time.Second
 
 var exp *jaeger.Exporter
 
+// Wait allows span exporter to inhibit application shutdown until it sends all traces
 func Wait(ctx context.Context) (err error) {
 	if exp != nil {
 		<-ctx.Done()

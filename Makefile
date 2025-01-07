@@ -3,6 +3,11 @@ deps:
 	go mod verify
 	go mod tidy
 
+tools:
+	which go
+	which golint
+	which govulncheck
+
 # go install golang.org/x/lint/golint@latest
 lint:
 	gofmt -w=true -s=true -l=true ./

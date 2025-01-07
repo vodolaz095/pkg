@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// Configure tunes global logger of zerolog
 func Configure(params Log, writers ...io.Writer) {
 	var outputsEnabled []io.Writer
 	outputsEnabled = append(outputsEnabled, zerolog.ConsoleWriter{
