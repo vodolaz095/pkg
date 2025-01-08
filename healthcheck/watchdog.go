@@ -26,6 +26,26 @@ func SetStatus(status string) (err error) {
 	return
 }
 
+// SetReloading notify systemd that service is reloading
+// https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html#RELOADING=1
+func SetReloading() (err error) {
+	_, err = daemon.SdNotify(false, "RELOADING=1")
+	return
+}
+
+// SetStopping notify systemd that service is stopping
+// https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html#STOPPING=1
+func SetStopping() (err error) {
+	_, err = daemon.SdNotify(false, "STOPPING=1")
+	return
+}
+
+// Notify sends free form notification to systemd about service state change
+func Notify(state string) (err error) {
+	_, err = daemon.SdNotify(false, state)
+	return
+}
+
 // StartWatchDog starts background process that notifies systemd if application is running properly
 func StartWatchDog(mainCtx context.Context, pingers []Pinger) (err error) {
 	var ok bool

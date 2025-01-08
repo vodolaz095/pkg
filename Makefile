@@ -36,3 +36,10 @@ vuln:
 	which govulncheck
 	govulncheck -version
 	govulncheck ./...
+
+start: run
+
+run:
+	go run example/example.go
+
+include make/*.mk
