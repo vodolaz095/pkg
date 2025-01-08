@@ -24,8 +24,8 @@ Documentation: https://pkg.go.dev/github.com/vodolaz095/pkg/date
 healthcheck
 =======================================
 Systemd compatible healthcheck.
-Documentation:
-https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html
+
+Documentation: https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html
 
 Usage example: 
 https://github.com/vodolaz095/stocks_broadcaster/blob/a03cf70efc1e333e959f58bd295aa2701cca37c8/main.go#L131-L160
@@ -56,7 +56,7 @@ volumes:
 services:
   jaeger:
     container_name: jaeger
-    image: docker.io/jaegertracing/all-in-one:1.39.0
+    image: docker.io/jaegertracing/all-in-one:1.57.0
     volumes:
       - jaeger_temp:/tmp
     ports:
@@ -65,6 +65,7 @@ services:
       - "6831:6831/udp" # accepting spans in compact jaeger thrift format over udp
 
 ```
+See example: [example.go](example%2Fexample.go)
 
 zerologger
 =======================================
