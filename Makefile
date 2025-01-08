@@ -1,3 +1,11 @@
+export majorVersion=1
+export minorVersion=0
+export patchVersion=$(shell git log --format='%h' | wc -l)
+export ver=$(majorVersion).$(minorVersion).$(patchVersion)
+
+tag:
+	git tag "v$(ver)"
+
 deps:
 	go mod download
 	go mod verify
