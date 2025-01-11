@@ -61,31 +61,33 @@ func StartWatchDog(mainCtx context.Context, pingers []Pinger) (err error) {
 		return
 	}
 	ticker := time.NewTicker(interval / 2)
-	go func() {
-		<-mainCtx.Done()
-		ticker.Stop()
-	}()
-	for t := range ticker.C {
-		ctx, cancel := context.WithDeadline(mainCtx, t.Add(interval/2))
-		ok = true
-		for i := range pingers {
-			err = pingers[i].Ping(ctx)
-			if err != nil {
-				log.Error().Err(err).Msgf("error pinging %v: %s", i, err)
-				ok = false
+	for {
+		select {
+		case <-mainCtx.Done():
+			ticker.Stop()
+			return nil
+		case t := <-ticker.C:
+			ctx, cancel := context.WithDeadline(mainCtx, t.Add(interval/2))
+			ok = true
+			for i := range pingers {
+				err = pingers[i].Ping(ctx)
+				if err != nil {
+					log.Error().Err(err).Msgf("error pinging %v: %s", i, err)
+					ok = false
+				}
 			}
-		}
-		cancel()
-		if ok {
-			_, err = daemon.SdNotify(false, daemon.SdNotifyWatchdog)
-			if err != nil {
-				log.Error().Err(err).Msgf("error sending watchdog notification: %s", err)
-				continue
+			cancel()
+
+			if ok {
+				_, err = daemon.SdNotify(false, daemon.SdNotifyWatchdog)
+				if err != nil {
+					log.Error().Err(err).Msgf("error sending watchdog notification: %s", err)
+					continue
+				}
+				log.Trace().Msgf("Service is healthy!")
+			} else {
+				log.Warn().Msgf("Service is broken!")
 			}
-			log.Trace().Msgf("Service is healthy!")
-		} else {
-			log.Warn().Msgf("Service is broken!")
 		}
 	}
-	return nil
 }
