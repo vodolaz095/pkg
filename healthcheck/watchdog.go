@@ -29,14 +29,14 @@ func SetStatus(status string) (err error) {
 // SetReloading notify systemd that service is reloading
 // https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html#RELOADING=1
 func SetReloading() (err error) {
-	_, err = daemon.SdNotify(false, "RELOADING=1")
+	_, err = daemon.SdNotify(false, daemon.SdNotifyReloading)
 	return
 }
 
 // SetStopping notify systemd that service is stopping
 // https://www.freedesktop.org/software/systemd/man/latest/sd_notify.html#STOPPING=1
 func SetStopping() (err error) {
-	_, err = daemon.SdNotify(false, "STOPPING=1")
+	_, err = daemon.SdNotify(false, daemon.SdNotifyStopping)
 	return
 }
 

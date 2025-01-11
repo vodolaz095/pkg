@@ -14,3 +14,14 @@ func AttachCodeLocationToSpan(span trace.Span) {
 		span.SetAttributes(semconv.CodeFilepath(file), semconv.CodeLineNumber(line))
 	}
 }
+
+// AddEventWithCodeLocation creates event in span with current code location
+func AddEventWithCodeLocation(span trace.Span, message string) {
+	_, file, line, ok := runtime.Caller(1)
+	if ok {
+		span.AddEvent(message, trace.WithAttributes(
+			semconv.CodeFilepath(file),
+			semconv.CodeLineNumber(line),
+		))
+	}
+}
