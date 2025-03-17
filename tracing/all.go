@@ -1,6 +1,7 @@
 package tracing
 
 import (
+	"context"
 	"fmt"
 
 	"go.opentelemetry.io/otel/attribute"
@@ -9,7 +10,7 @@ import (
 // Config is universal config being used to tune tracing
 type Config struct {
 	// Protocol sets how we send spans to jaeger - over udp or over http
-	Protocol string `yaml:"protocol" validate:"required,oneof=udp http UDP HTTP"`
+	Protocol string `yaml:"protocol" validate:"required,oneof=udp http UDP HTTP otlp_http OTLP_HTTP"`
 
 	/*
 		Configuration for Jaeger exporter to send spans to a Jaeger agent over compact thrift protocol over UDP
@@ -37,6 +38,15 @@ type Config struct {
 	// variable OTEL_EXPORTER_JAEGER_PASSWORD. Default is empty
 	Password string `yaml:"password"`
 
+	/*
+		Configuration for Jaeger exporter to use full URL to  HTTP OTLP collector.
+	*/
+
+	// OTLPEndpoint sets HTTP OTLP collector url, overrides value of environment variable of OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+	// Default is  "https://localhost:4318/v1/traces". See full documentation for environment options supported:
+	// https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp#pkg-overview
+	OTLPEndpoint string `yaml:"otlp_endpoint"`
+
 	// Ratio sets percent of spans to record, where 1 - means every span is recorded, 0 - no spans recorded and .05 means only 5% of spans are recorded
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
@@ -44,6 +54,13 @@ type Config struct {
 // Start starts telemetry exporter
 func Start(cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 	switch cfg.Protocol {
+	case "otlp_http", "OTLP_HTTP":
+		return ConfigureOTLPoverHTTP(context.Background(), OTLPoverHTTPConfig{
+			Endpoint:    cfg.Endpoint,
+			Compression: true,
+			Ratio:       cfg.Ratio,
+			Opts:        nil,
+		}, extraAttributes...)
 	case "udp", "UDP":
 		return ConfigureUDP(UDPConfig{
 			Host:  cfg.Host,

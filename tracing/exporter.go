@@ -5,18 +5,17 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 const defaultTimeout = 10 * time.Second
 
-var exp *jaeger.Exporter
+var exp trace.SpanExporter
 
 // Wait allows span exporter to inhibit application shutdown until it sends all traces
 func Wait(ctx context.Context) (err error) {
 	if exp != nil {
 		<-ctx.Done()
-
 		shutdownContext, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 		defer cancel()
 		err = exp.Shutdown(shutdownContext)
@@ -27,6 +26,5 @@ func Wait(ctx context.Context) (err error) {
 		log.Debug().Msgf("All spans are saved")
 		return nil
 	}
-
 	return nil
 }

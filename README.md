@@ -51,18 +51,30 @@ Opinionated way to configure OpenTelemetry with `jaegertracing/all-in-one` start
 version: "3.11"
 
 volumes:
+  jaeger_temp_old:
   jaeger_temp:
 
 services:
-  jaeger:
+  jaeger_old:
     container_name: jaeger
     image: docker.io/jaegertracing/all-in-one:1.57.0
+    volumes:
+      - jaeger_temp_old:/tmp
+    ports:
+      - "16686:16686/tcp" # webui is listening
+      - "14268:14268/tcp" # accepting spans in compact jaeger thrift format over http
+      - "6831:6831/udp" # accepting spans in compact jaeger thrift format over udp
+
+  jaeger:
+    container_name: jaeger
+    image: docker.io/jaegertracing/all-in-one:1.67.0
     volumes:
       - jaeger_temp:/tmp
     ports:
       - "16686:16686/tcp" # webui is listening
       - "14268:14268/tcp" # accepting spans in compact jaeger thrift format over http
-      - "6831:6831/udp" # accepting spans in compact jaeger thrift format over udp
+      - "4318:4318/tcp" # accepting spans in OTLP format over http
+
 
 ```
 See example: [example.go](example%2Fexample.go)

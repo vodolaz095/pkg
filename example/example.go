@@ -23,7 +23,10 @@ func main() {
 	zerologger.Configure(zerologger.Log{Level: zerologger.TraceLevel})
 
 	// configure tracing
-	err := tracing.ConfigureUDP(tracing.UDPConfig{Ratio: 1},
+	err := tracing.ConfigureOTLPoverHTTP(initialCtx, tracing.OTLPoverHTTPConfig{
+		Endpoint: "http://localhost:4318/v1/traces",
+		Ratio:    1,
+	},
 		semconv.ServiceName("pkg_example"),
 		attribute.String("environment", "example"),
 	)
@@ -72,7 +75,7 @@ func main() {
 				log.Info().Msg("ticker 3 is stopping...")
 				return nil
 			case <-tt.C:
-				n += 1
+				n++
 				_, span := otel.Tracer("ticker").Start(ctx, "loop",
 					trace.WithAttributes(attribute.Int("iteration", n)))
 				span.AddEvent("Hello from ticker 3!", trace.WithAttributes(attribute.Int("iteration", n)))
