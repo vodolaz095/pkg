@@ -1,6 +1,6 @@
 module github.com/vodolaz095/pkg
 
-go 1.23.2
+go 1.23.6
 
 require (
 	github.com/coreos/go-systemd/v22 v22.5.0
