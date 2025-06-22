@@ -51,11 +51,32 @@ type Config struct {
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
 
+func (c *Config) String() string {
+	switch c.Protocol {
+	case "otlp_http", "OTLP_HTTP":
+		return fmt.Sprintf("Sending spans via OTLP HTTP into %s with ratio %.0f%%...",
+			c.OTLPEndpoint, 100*c.Ratio)
+	case "udp", "UDP":
+		return fmt.Sprintf("Sending spans over compact thrift protocol over udp into %s:%s with ratio %.0f%%...",
+			c.Host, c.Port, 100*c.Ratio)
+	case "http", "HTTP":
+		return fmt.Sprintf("Sending spans over compact thrift protocol over http into %s with ratio %.0f%%...",
+			c.Endpoint, 100*c.Ratio)
+	default:
+		return fmt.Sprintf("Unknown protocol %s", c.Protocol)
+	}
+}
+
 // Start starts telemetry exporter
 func Start(cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
+	return StartWithContext(context.Background(), cfg, extraAttributes...)
+}
+
+// StartWithContext starts telemetry exporter with context provided
+func StartWithContext(ctx context.Context, cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 	switch cfg.Protocol {
 	case "otlp_http", "OTLP_HTTP":
-		return ConfigureOTLPoverHTTP(context.Background(), OTLPoverHTTPConfig{
+		return ConfigureOTLPoverHTTP(ctx, OTLPoverHTTPConfig{
 			Endpoint:    cfg.Endpoint,
 			Compression: true,
 			Ratio:       cfg.Ratio,

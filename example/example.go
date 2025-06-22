@@ -23,10 +23,14 @@ func main() {
 	zerologger.Configure(zerologger.Log{Level: zerologger.TraceLevel})
 
 	// configure tracing
-	err := tracing.ConfigureOTLPoverHTTP(initialCtx, tracing.OTLPoverHTTPConfig{
-		Endpoint: "http://localhost:4318/v1/traces",
-		Ratio:    1,
-	},
+	tracingCfg := tracing.Config{
+		Protocol:     "otlp_http",
+		OTLPEndpoint: "http://localhost:4318/v1/traces",
+		Ratio:        1,
+	}
+	log.Info().Msg(tracingCfg.String())
+
+	err := tracing.StartWithContext(initialCtx, tracingCfg,
 		semconv.ServiceName("pkg_example"),
 		attribute.String("environment", "example"),
 	)
