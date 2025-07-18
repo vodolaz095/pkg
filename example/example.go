@@ -27,6 +27,7 @@ func main() {
 		Protocol:     "otlp_http",
 		OTLPEndpoint: "http://localhost:4318/v1/traces",
 		Ratio:        1,
+		Insecure:     true,
 	}
 	log.Info().Msg(tracingCfg.String())
 
@@ -78,10 +79,12 @@ func main() {
 				tt.Stop()
 				log.Info().Msg("ticker 3 is stopping...")
 				return nil
-			case <-tt.C:
+			case now := <-tt.C:
 				n++
 				_, span := otel.Tracer("ticker").Start(ctx, "loop",
 					trace.WithAttributes(attribute.Int("iteration", n)))
+
+				tracing.AddAttributeToSpan(span, "timestamp", now)
 				span.AddEvent("Hello from ticker 3!", trace.WithAttributes(attribute.Int("iteration", n)))
 				log.Info().
 					Int("iteration", n).

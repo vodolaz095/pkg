@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 )
 
 // Config is universal config being used to tune tracing
@@ -47,6 +48,8 @@ type Config struct {
 	// https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp#pkg-overview
 	OTLPEndpoint string `yaml:"otlp_endpoint"`
 
+	// Insecure allows insecure connections over HTTP protocol where connection via HTTPS are preferred
+	Insecure bool `yaml:"insecure"`
 	// Ratio sets percent of spans to record, where 1 - means every span is recorded, 0 - no spans recorded and .05 means only 5% of spans are recorded
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
 }
@@ -76,11 +79,15 @@ func Start(cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 func StartWithContext(ctx context.Context, cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 	switch cfg.Protocol {
 	case "otlp_http", "OTLP_HTTP":
+		var opts []otlptracehttp.Option
+		if cfg.Insecure {
+			opts = append(opts, otlptracehttp.WithInsecure())
+		}
 		return ConfigureOTLPoverHTTP(ctx, OTLPoverHTTPConfig{
 			Endpoint:    cfg.Endpoint,
 			Compression: true,
 			Ratio:       cfg.Ratio,
-			Opts:        nil,
+			Opts:        opts,
 		}, extraAttributes...)
 	case "udp", "UDP":
 		return ConfigureUDP(UDPConfig{
