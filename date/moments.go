@@ -47,3 +47,8 @@ func BeginningOfWeek(when time.Time) time.Time {
 func EndOfWeek(when time.Time) time.Time {
 	return BeginningOfWeek(when).AddDate(0, 0, 7)
 }
+
+// DaysInMonth returns number of days in this month
+func DaysInMonth(when time.Time) int {
+	return time.Date(when.Year(), 1+when.Month(), 0, 0, 0, 0, 0, when.Location()).Day()
+}
