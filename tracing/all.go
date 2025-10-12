@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 )
 
 // Config is universal config being used to tune tracing
@@ -79,15 +78,11 @@ func Start(cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 func StartWithContext(ctx context.Context, cfg Config, extraAttributes ...attribute.KeyValue) (err error) {
 	switch cfg.Protocol {
 	case "otlp_http", "OTLP_HTTP":
-		var opts []otlptracehttp.Option
-		if cfg.Insecure {
-			opts = append(opts, otlptracehttp.WithInsecure())
-		}
 		return ConfigureOTLPoverHTTP(ctx, OTLPoverHTTPConfig{
 			Endpoint:    cfg.Endpoint,
 			Compression: true,
 			Ratio:       cfg.Ratio,
-			Opts:        opts,
+			Insecure:    cfg.Insecure,
 		}, extraAttributes...)
 	case "udp", "UDP":
 		return ConfigureUDP(UDPConfig{

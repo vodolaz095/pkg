@@ -14,6 +14,7 @@ type OTLPoverHTTPConfig struct {
 	Ratio       float64                `yaml:"ratio" validate:"lte=1,gte=0"`
 	Headers     map[string]string      `yaml:"headers"`
 	Opts        []otlptracehttp.Option `yaml:"-"`
+	Insecure    bool                   `yaml:"insecure"`
 }
 
 // ConfigureOTLPoverHTTP fine tunes OTLP HTTP exporter to deliver spans via OTLP over HTTP protocol to collector http endpoint
@@ -27,6 +28,9 @@ func ConfigureOTLPoverHTTP(ctx context.Context, cfg OTLPoverHTTPConfig, extraAtt
 	}
 	if len(cfg.Headers) > 0 {
 		opts = append(opts, otlptracehttp.WithHeaders(cfg.Headers))
+	}
+	if cfg.Insecure {
+		opts = append(opts, otlptracehttp.WithInsecure())
 	}
 	opts = append(opts, cfg.Opts...)
 	exp, err = otlptracehttp.New(ctx, opts...)
