@@ -79,7 +79,7 @@ func StartWithContext(ctx context.Context, cfg Config, extraAttributes ...attrib
 	switch cfg.Protocol {
 	case "otlp_http", "OTLP_HTTP":
 		return ConfigureOTLPoverHTTP(ctx, OTLPoverHTTPConfig{
-			Endpoint:    cfg.Endpoint,
+			Endpoint:    cfg.OTLPEndpoint,
 			Compression: true,
 			Ratio:       cfg.Ratio,
 			Insecure:    cfg.Insecure,
