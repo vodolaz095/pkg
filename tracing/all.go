@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"go.opentelemetry.io/otel/attribute"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 )
 
 // Config is universal config being used to tune tracing
@@ -51,6 +52,12 @@ type Config struct {
 	Insecure bool `yaml:"insecure"`
 	// Ratio sets percent of spans to record, where 1 - means every span is recorded, 0 - no spans recorded and .05 means only 5% of spans are recorded
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
+
+	/*
+	   Extra trace provider options like samplers and so on applied for all exporters
+	*/
+	// TraceProviderOptions allows to add extra tracer provider options like custom sampler and so on
+	TraceProviderOptions []tracesdk.TracerProviderOption `yaml:"-"`
 }
 
 func (c *Config) String() string {
@@ -79,22 +86,25 @@ func StartWithContext(ctx context.Context, cfg Config, extraAttributes ...attrib
 	switch cfg.Protocol {
 	case "otlp_http", "OTLP_HTTP":
 		return ConfigureOTLPoverHTTP(ctx, OTLPoverHTTPConfig{
-			Endpoint:    cfg.OTLPEndpoint,
-			Compression: true,
-			Ratio:       cfg.Ratio,
-			Insecure:    cfg.Insecure,
+			Endpoint:             cfg.OTLPEndpoint,
+			Compression:          true,
+			Ratio:                cfg.Ratio,
+			Insecure:             cfg.Insecure,
+			TraceProviderOptions: cfg.TraceProviderOptions,
 		}, extraAttributes...)
 	case "udp", "UDP":
 		return ConfigureUDP(UDPConfig{
-			Host:  cfg.Host,
-			Port:  cfg.Port,
-			Ratio: cfg.Ratio,
+			Host:                 cfg.Host,
+			Port:                 cfg.Port,
+			Ratio:                cfg.Ratio,
+			TraceProviderOptions: cfg.TraceProviderOptions,
 		}, extraAttributes...)
 	case "http", "HTTP":
 		return ConfigureHTTP(HTTPConfig{
-			Endpoint: cfg.Endpoint,
-			Username: cfg.Username,
-			Password: cfg.Password,
+			Endpoint:             cfg.Endpoint,
+			Username:             cfg.Username,
+			Password:             cfg.Password,
+			TraceProviderOptions: cfg.TraceProviderOptions,
 		}, extraAttributes...)
 	default:
 		return fmt.Errorf("unknowwn protocol: %s", cfg.Protocol)

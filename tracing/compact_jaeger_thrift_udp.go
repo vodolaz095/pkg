@@ -4,6 +4,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 )
 
 // UDPConfig is used to fine tune jaeger exporter to deliver spans via compact thrift protocol to agent udp listener
@@ -16,6 +17,8 @@ type UDPConfig struct {
 	Port string `yaml:"port"`
 	// Ratio sets percent of spans to record, where 1 - means every span is recorded, 0 - no spans recorded and .05 means only 5% of spans are recorded
 	Ratio float64 `yaml:"ratio" validate:"required,lte=1,gte=0"`
+	// TraceProviderOptions allows to add extra tracer provider options like custom sampler and so on
+	TraceProviderOptions []tracesdk.TracerProviderOption `yaml:"-"`
 }
 
 // ConfigureUDP fine tunes jaeger exporter to deliver spans via compact thrift protocol to agent udp listener
@@ -43,5 +46,5 @@ func ConfigureUDP(cfg UDPConfig, extraAttributes ...attribute.KeyValue) (err err
 	if err != nil {
 		return err
 	}
-	return makeProvider(cfg.Ratio, extraAttributes...)
+	return makeProvider(cfg.TraceProviderOptions, cfg.Ratio, extraAttributes...)
 }

@@ -12,7 +12,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
 )
 
-func makeProvider(ratio float64, extraAttributes ...attribute.KeyValue) error {
+func makeProvider(opts []tracesdk.TracerProviderOption, ratio float64, extraAttributes ...attribute.KeyValue) error {
 	hostname, err := os.Hostname()
 	if err != nil {
 		return err
@@ -22,7 +22,8 @@ func makeProvider(ratio float64, extraAttributes ...attribute.KeyValue) error {
 		semconv.OSName(runtime.GOOS),
 		semconv.HostArchKey.String(runtime.GOARCH),
 	)
-	tp := tracesdk.NewTracerProvider(
+	var traceProviderOptions []tracesdk.TracerProviderOption
+	traceProviderOptions = append(traceProviderOptions,
 		// Always be sure to batch in production.
 		tracesdk.WithBatcher(exp),
 		// set sampling part of data
@@ -33,6 +34,8 @@ func makeProvider(ratio float64, extraAttributes ...attribute.KeyValue) error {
 			extraAttributes...,
 		)),
 	)
+	traceProviderOptions = append(traceProviderOptions, opts...)
+	tp := tracesdk.NewTracerProvider(traceProviderOptions...)
 
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
 		propagation.TraceContext{},

@@ -6,6 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/errgroup"
@@ -28,6 +29,9 @@ func main() {
 		OTLPEndpoint: "http://localhost:4318/v1/traces",
 		Ratio:        1,
 		Insecure:     true,
+		TraceProviderOptions: []tracesdk.TracerProviderOption{
+			tracesdk.WithSampler(tracesdk.AlwaysSample()),
+		},
 	}
 	log.Info().Msg(tracingCfg.String())
 

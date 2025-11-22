@@ -4,6 +4,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 )
 
 // HTTPConfig is used to fine tune jaeger exporter to deliver spans via compact thrift protocol to collector http endpoint
@@ -12,6 +13,8 @@ type HTTPConfig struct {
 	Username string  `yaml:"username"`
 	Password string  `yaml:"password"`
 	Ratio    float64 `yaml:"ratio" validate:"lte=1,gte=0"`
+	// TraceProviderOptions allows to add extra tracer provider options like custom sampler and so on
+	TraceProviderOptions []tracesdk.TracerProviderOption `yaml:"-"`
 }
 
 // ConfigureHTTP fine tunes jaeger exporter to deliver spans via compact thrift protocol to collector http endpoint
@@ -39,5 +42,5 @@ func ConfigureHTTP(cfg HTTPConfig, extraAttributes ...attribute.KeyValue) (err e
 	if err != nil {
 		return err
 	}
-	return makeProvider(cfg.Ratio, extraAttributes...)
+	return makeProvider(cfg.TraceProviderOptions, cfg.Ratio, extraAttributes...)
 }
