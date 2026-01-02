@@ -21,6 +21,7 @@ func makeProvider(opts []tracesdk.TracerProviderOption, ratio float64, extraAttr
 		semconv.HostID(hostname),
 		semconv.OSName(runtime.GOOS),
 		semconv.HostArchKey.String(runtime.GOARCH),
+		semconv.TelemetrySDKLanguageGo,
 	)
 	var traceProviderOptions []tracesdk.TracerProviderOption
 	traceProviderOptions = append(traceProviderOptions,
