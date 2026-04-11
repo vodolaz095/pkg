@@ -75,7 +75,13 @@ func AddAttributeToSpan(span trace.Span, name string, val any) {
 }
 
 func RecordError(span trace.Span, err error) error {
-	span.SetStatus(codes.Error, err.Error())
-	span.RecordError(err)
+	_, file, line, ok := runtime.Caller(1)
+	if ok {
+		span.SetStatus(codes.Error, err.Error())
+		span.RecordError(err, trace.WithAttributes(
+			semconv.CodeFilepath(file),
+			semconv.CodeLineNumber(line),
+		))
+	}
 	return err
 }
