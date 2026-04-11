@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -71,4 +72,10 @@ func AddAttributeToSpan(span trace.Span, name string, val any) {
 	default:
 		span.SetAttributes(attribute.String(name, fmt.Sprint(v)))
 	}
+}
+
+func RecordError(span trace.Span, err error) error {
+	span.SetStatus(codes.Error, err.Error())
+	span.RecordError(err)
+	return err
 }
