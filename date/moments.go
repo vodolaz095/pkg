@@ -14,7 +14,7 @@ func EndOfTheDay(when time.Time) time.Time {
 
 // BeginningOfMonth returns moment when this month begins
 func BeginningOfMonth(when time.Time) time.Time {
-	return when.AddDate(0, 0, -when.Day()+1)
+	return time.Date(when.Year(), when.Month(), 1, 0, 0, 0, 1, when.Location())
 }
 
 // EndOfMonth returns moment when this month is ends
@@ -38,7 +38,7 @@ func BeginningOfWeek(when time.Time) time.Time {
 	}
 	for isoWeek < week { // iterate forward to the first day of the given week
 		date = date.AddDate(0, 0, 1)
-		isoYear, isoWeek = date.ISOWeek()
+		_, isoWeek = date.ISOWeek()
 	}
 	return date
 }
