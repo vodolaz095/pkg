@@ -29,5 +29,4 @@ func Configure(params Log, writers ...io.Writer) {
 		With().Timestamp().Caller().
 		Logger().Level(ExtractZerologLevel(params.Level))
 	log.Logger = sink
-	return
 }

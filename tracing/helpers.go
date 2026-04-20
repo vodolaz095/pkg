@@ -53,6 +53,10 @@ func AddAttributeToSpan(span trace.Span, name string, val any) {
 		span.SetAttributes(attribute.String(name, v))
 	case []string:
 		span.SetAttributes(attribute.StringSlice(name, v))
+	case time.Duration:
+		span.SetAttributes(attribute.String(name, v.String()))
+	case time.Time:
+		span.SetAttributes(attribute.String(name, v.Format(time.RFC3339Nano)))
 	case fmt.Stringer:
 		span.SetAttributes(attribute.Stringer(name, v))
 	case []fmt.Stringer:
@@ -65,10 +69,6 @@ func AddAttributeToSpan(span trace.Span, name string, val any) {
 		for k := range v {
 			span.SetAttributes(attribute.Stringer(name+"."+k, v[k]))
 		}
-	case time.Duration:
-		span.SetAttributes(attribute.String(name, v.String()))
-	case time.Time:
-		span.SetAttributes(attribute.String(name, v.Format(time.RFC3339Nano)))
 	default:
 		span.SetAttributes(attribute.String(name, fmt.Sprint(v)))
 	}
