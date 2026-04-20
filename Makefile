@@ -34,7 +34,6 @@ cover:
 # install it by `go install golang.org/x/vuln/cmd/govulncheck@latest`
 vuln:
 	which govulncheck
-	govulncheck -version
 	govulncheck ./...
 
 start: run
