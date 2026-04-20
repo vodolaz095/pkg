@@ -30,8 +30,10 @@ func GenerateRandomString(alphabet string, n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	alphabetLen := len(alphabet)
+	result := make([]byte, n)
 	for i, b := range bytes {
-		bytes[i] = alphabet[b%byte(len(alphabet))]
+		result[i] = alphabet[int(b)%alphabetLen]
 	}
-	return string(bytes), nil
+	return string(result), nil
 }
