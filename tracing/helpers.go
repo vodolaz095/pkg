@@ -74,6 +74,7 @@ func AddAttributeToSpan(span trace.Span, name string, val any) {
 	}
 }
 
+// RecordError record error into span with pretty stacktrace including code path and line number
 func RecordError(span trace.Span, err error) error {
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
