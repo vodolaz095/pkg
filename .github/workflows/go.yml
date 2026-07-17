@@ -28,5 +28,11 @@ jobs:
     - name: scan for vulnerable packages
       run: make vuln
 
+    - name: install golint
+      run: go install golang.org/x/lint/golint@latest
+
+    - name: run lint
+      run: make lint
+
     - name: run unit test
       run: go test -v ./...
