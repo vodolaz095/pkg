@@ -46,3 +46,10 @@ The repository uses Makefile for various commands:
   Requires tools and dependencies to be set up using `make tools` and `make deps` respectively.
 - `vuln-scan`: Skill to scan for vulnerabilities using `make vuln` and fix them by updating dependencies with `go get` according to semver.
   Requires `govulncheck` to be installed and available in PATH.
+- `lint`: Skill to run linting on the Go codebase and automatically fix any issues found.
+  Requires tools (go, gopls, staticcheck) to be installed and available in PATH.
+  Usage:
+  1. Verify required tools are available
+  2. Run `make lint` to identify issues
+  3. Analyze lint output and apply fixes
+  4. Verify fixes resolved all issues
