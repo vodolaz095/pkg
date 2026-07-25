@@ -25,11 +25,14 @@ jobs:
     - name: install govulncheck utility
       run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
-    - name: scan for vulnerable packages
-      run: make vuln
+    - name: install staticcheck utility
+      run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
     - name: install golint
       run: go install golang.org/x/lint/golint@latest
+
+    - name: scan for vulnerable packages
+      run: make vuln
 
     - name: run lint
       run: make lint

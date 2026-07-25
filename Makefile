@@ -17,7 +17,7 @@ tools:
 	which govulncheck
 
 # go install golang.org/x/lint/golint@latest
-# go install go install honnef.co/go/tools/cmd/staticcheck@latest
+# go install honnef.co/go/tools/cmd/staticcheck@latest
 lint:
 	gofmt -w=true -s=true -l=true ./
 	golint ./...
