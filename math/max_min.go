@@ -7,7 +7,7 @@ func Max[T Number](input ...T) (maximum T, index int) {
 		return 0, -1
 	}
 	maximum = input[0]
-	for i = 0; i < len(input); i++ {
+	for i = range input {
 		if input[i] > maximum {
 			maximum = input[i]
 			index = i
@@ -23,7 +23,7 @@ func Min[T Number](input ...T) (minimum T, index int) {
 		return 0, -1
 	}
 	minimum = input[0]
-	for i = 0; i < len(input); i++ {
+	for i = range input {
 		if input[i] < minimum {
 			minimum = input[i]
 			index = i

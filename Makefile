@@ -13,11 +13,12 @@ deps:
 
 tools:
 	which go
-	which golint
-	which govulncheck
+	which golint # go install golang.org/x/lint/golint@latest
+	which govulncheck # go install honnef.co/go/tools/cmd/staticcheck@latest
+	
+fix:
+	go fix ./...
 
-# go install golang.org/x/lint/golint@latest
-# go install honnef.co/go/tools/cmd/staticcheck@latest
 lint:
 	gofmt -w=true -s=true -l=true ./
 	golint ./...
