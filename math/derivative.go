@@ -4,7 +4,7 @@ package math
 func Derivative[T Number](input []T) (ret []T) {
 	ret = make([]T, len(input))
 	var acc T = 0
-	for i := 0; i < len(input); i++ {
+	for i := range input {
 		ret[i] = input[i] - acc
 		acc = input[i]
 	}
