@@ -23,6 +23,7 @@ The repository uses Makefile for various commands:
 
 - `make deps`: Downloads and verifies Go module dependencies.
 - `make tools`: Checks the availability of required tools like `golint` and `govulncheck`.
+- `make fix`: Runs `go fix ./...` to fix code style packages to make it more modern.
 - `make lint`: Runs `gofmt`, `golint`, and `go vet` to ensure code quality.
 - `make test`: Runs all tests in the repository.
 - `make cover`: Runs tests with coverage.
